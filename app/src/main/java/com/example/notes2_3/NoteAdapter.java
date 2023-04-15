@@ -22,12 +22,21 @@ import java.util.List;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.viewHolder> {
 
     private List<Note> list = new ArrayList<>();
+    private ItemClickListener listener;
+
+    public NoteAdapter(ItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public void addNote(Note note) {
         list.add(note);
         notifyDataSetChanged();
     }
 
+    public void changeNote(int position, Note note) {
+        list.set(position, note);
+        notifyDataSetChanged();
+    }
     public Note getItem(int pos) {
         return list.get(pos);
     }
@@ -85,7 +94,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.viewHolder> {
                 list.remove(position);
                 notifyItemRemoved(position);
             });
+            pen.setOnClickListener(view -> {
+                listener.updateNote(position);
+            });
 
         }
+    }
+
+    interface ItemClickListener {
+        void updateNote(int position);
     }
 }

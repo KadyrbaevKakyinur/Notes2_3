@@ -43,19 +43,37 @@ public class AddFragment extends Fragment {
         desc = view.findViewById(R.id.edit_description);
         Bundle bundle = new Bundle();
 
-        save.setOnClickListener(v -> {
-            Toast.makeText(requireActivity(), "Ура", Toast.LENGTH_SHORT).show();
-            String _title = title.getText().toString();
-            String _desc = desc.getText().toString();
-            String _date = date.getText().toString();
-            Note note = new Note("", _title, _desc, _date);
+        if (getArguments() != null) {
+            save.setText("Edit");
+            Note note = (Note) getArguments().getSerializable("editNote");
+            title.setText(note.getTitle());
+            desc.setText(note.getDesc());
+            save.setOnClickListener(view1 -> {
+                int position = getArguments().getInt("position");
+                bundle.putInt("position", position);
 
-            bundle.putSerializable("model", note);
+                String _titleEdit = title.getText().toString();
+                String _descEdit = desc.getText().toString();
+                String _dateEdit = date.getText().toString();
+                Note editNote = new Note("", _titleEdit, _descEdit, _dateEdit);
+                bundle.putSerializable("changeNote", editNote);
 
-            requireActivity().getSupportFragmentManager().setFragmentResult("note", bundle);
-            requireActivity().getSupportFragmentManager().popBackStack();
-        });
+                requireActivity().getSupportFragmentManager().setFragmentResult("edit", bundle);
+                requireActivity().getSupportFragmentManager().popBackStack();
+            });
+        } else {
+            save.setOnClickListener(v -> {
+                Toast.makeText(requireActivity(), "Ура", Toast.LENGTH_SHORT).show();
+                String _title = title.getText().toString();
+                String _desc = desc.getText().toString();
+                String _date = date.getText().toString();
+                Note note = new Note("", _title, _desc, _date);
+                bundle.putSerializable("model", note);
 
+                requireActivity().getSupportFragmentManager().setFragmentResult("note", bundle);
+                requireActivity().getSupportFragmentManager().popBackStack();
+            });
+        }
 
     }
 /*

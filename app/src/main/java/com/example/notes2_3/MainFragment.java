@@ -18,7 +18,7 @@ import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements NoteAdapter.ItemClickListener {
 
     RecyclerView recyclerView;
     NoteAdapter adapter;
@@ -42,7 +42,7 @@ public class MainFragment extends Fragment {
         add = view.findViewById(R.id.add);
         recyclerView = view.findViewById(R.id.recycler);
 
-        adapter = new NoteAdapter();
+        adapter = new NoteAdapter(this);
         recyclerView.setAdapter(adapter);
 
         add.setOnClickListener(v -> {
@@ -56,6 +56,12 @@ public class MainFragment extends Fragment {
         requireActivity().getSupportFragmentManager().setFragmentResultListener("note", this, (requestKey, result) -> {
             Note note = (Note) result.getSerializable("model");
             adapter.addNote(note);
+        });
+
+        requireActivity().getSupportFragmentManager().setFragmentResultListener("edit", this, (requestKey, result) -> {
+            Note note = (Note) result.getSerializable("changeNote");
+            int position = result.getInt("position");
+            adapter.changeNote(position, note);
         });
 
         sort = view.findViewById(R.id.sort);
@@ -77,4 +83,20 @@ public class MainFragment extends Fragment {
     }
 
 
+    @Override
+    public void updateNote(int position) {
+        Note note = adapter.getItem(position);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("editNote", note);
+        bundle.putInt("position", position);
+        AddFragment addFragment = new AddFragment();
+        addFragment.setArguments(bundle);
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, addFragment)
+                .addToBackStack("AddNoteFragment")
+                .commit();
+
+
+    }
 }
