@@ -37,6 +37,14 @@
      android:layout_height="50dp"
      android:background="@drawable/bg_add" />
 
+<androidx.recyclerview.widget.RecyclerView
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    android:id="@+id/recycler"
+    tools:listitem="@layout/item_note"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/search_edit"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

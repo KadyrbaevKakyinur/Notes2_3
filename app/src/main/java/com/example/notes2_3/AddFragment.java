@@ -1,9 +1,11 @@
 package com.example.notes2_3;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,11 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class AddFragment extends Fragment {
 
-    EditText editText;
-    Button button;
+    private String imageUri;
+    EditText title;
+    EditText date;
+    EditText desc;
+
+    AppCompatButton save;
 
 
     @Override
@@ -29,14 +37,31 @@ public class AddFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        button = view.findViewById(R.id.add);
-        editText= view.findViewById(R.id.edit_title);
+        save = view.findViewById(R.id.save);
+        title = view.findViewById(R.id.edit_title);
+        date = view.findViewById(R.id.edit_date);
+        desc = view.findViewById(R.id.edit_description);
+        Bundle bundle = new Bundle();
+
+        save.setOnClickListener(v -> {
+            Toast.makeText(requireActivity(), "Ура", Toast.LENGTH_SHORT).show();
+            String _title = title.getText().toString();
+            String _desc = desc.getText().toString();
+            String _date = date.getText().toString();
+            Note note = new Note("", _title, _desc, _date);
+
+            bundle.putSerializable("model", note);
+
+            requireActivity().getSupportFragmentManager().setFragmentResult("note", bundle);
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
 
 
-        if (getArguments() != null){
-            String edit_title = getArguments().getString("text");
-            editText.setText(edit_title);
-
-        }
     }
+/*
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageUri = data.getDataString();
+    }*/
 }
